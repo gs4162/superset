@@ -18,12 +18,14 @@ import json
 import re
 from typing import Any
 
+import yaml
 from flask_babel import lazy_gettext as _
 from marshmallow import fields, pre_load, Schema, ValidationError
 from marshmallow.validate import Length
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from superset.datasets.models import Dataset
+from superset.exceptions import SupersetMarshmallowValidationError
 
 get_delete_ids_schema = {"type": "array", "items": {"type": "integer"}}
 get_export_ids_schema = {"type": "array", "items": {"type": "integer"}}
@@ -122,6 +124,12 @@ class DatasetPutSchema(Schema):
     extra = fields.String(allow_none=True)
     is_managed_externally = fields.Boolean(allow_none=True, dump_default=False)
     external_url = fields.String(allow_none=True)
+
+    def handle_error(self, exc: ValidationError, data: dict[str, Any], **kwargs: Any):
+        """
+        Return SIP-40 error.
+        """
+        raise SupersetMarshmallowValidationError(exc, data)
 
 
 class DatasetDuplicateSchema(Schema):

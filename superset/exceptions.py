@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 from collections import defaultdict
-from typing import Any, Optional
+from typing import Any, Iterator, Optional, Tuple
 
 from flask_babel import gettext as _
 from marshmallow import ValidationError
@@ -278,3 +278,20 @@ class QueryNotFoundException(SupersetException):
 
 class ColumnNotFoundException(SupersetException):
     status = 404
+
+
+class SupersetMarshmallowValidationError(SupersetErrorException):
+    """
+    Exception to be raised for Marshmallow validation errors.
+    """
+
+    status = 422
+
+    def __init__(self, exc: ValidationError, payload: dict[str, Any]):
+        error = SupersetError(
+            message=_("The schema of the submitted payload is invalid."),
+            error_type=SupersetErrorType.MARSHMALLOW_ERROR,
+            level=ErrorLevel.ERROR,
+            extra={"messages": exc.messages, "payload": payload},
+        )
+        super().__init__(error)
