@@ -44,6 +44,23 @@ def get_env_variable(var_name: str, default: Optional[str] = None) -> str:
             )
             raise EnvironmentError(error_msg)
 
+APP_NAME = "MHM AUTOMATION"
+APP_ICON = "/static/assets/images/logo.png"
+MENU_HIDE_USER_INFO = False
+FAVICONS = [
+    {
+        "href": "/static/assets/images/mhm/favicon-16x16.png",
+        "sizes": "16x16",
+        "tpye": "image/png",
+        "rel": "icon",
+    },
+    {
+        "href": "/static/assets/images/mhm/favicon-32x32.png",
+        "sizes": "32x32",
+        "tpye": "image/png",
+        "rel": "icon",
+    },
+]
 
 DATABASE_DIALECT = get_env_variable("DATABASE_DIALECT")
 DATABASE_USER = get_env_variable("DATABASE_USER")
